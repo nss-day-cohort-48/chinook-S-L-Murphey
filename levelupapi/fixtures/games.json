@@ -1,0 +1,26 @@
+[
+    {
+        "model": "levelupapi.game",
+        "pk": 1,
+        "fields": {
+            "name": "Backgammon",
+            "game_type": 1,
+            "description": "A two-player game where each player has fifteen pieces that move between twenty-four triangles according to the roll of two dice. The objective of the game is to be the first to bear off.",
+            "number_of_players": 2,
+            "gamer": 1,
+            "maker": "Unknown"
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 2,
+        "fields": {
+            "name": "Go",
+            "game_type": 1,
+            "description": "The oldest board game in the world. Go is an abstract strategy board game for two players in which the aim is to surround more territory than the opponent.",
+            "number_of_players": 2,
+            "gamer": 1,
+            "maker": "Unknown"
+        }
+    }
+]
