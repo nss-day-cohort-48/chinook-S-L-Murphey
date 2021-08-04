@@ -22,5 +22,41 @@
             "gamer": 1,
             "maker": "Unknown"
         }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 3,
+        "fields": {
+            "name": "Welcome To",
+            "game_type": 1,
+            "description":"Welcome To... plays like a roll-and-write dice game in which you mark results on a score-sheet...but without dice.",
+            "number_of_players": 4,
+            "gamer": 1,
+            "maker": "Benoit Turpin"
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 4,
+        "fields": {
+            "name": "Settlers of Catan",
+            "game_type": 1,
+            "description":"In The Settlers of Catan, players try to be the dominant force on the island of Catan by building settlements, cities, and roads.",
+            "number_of_players": 4,
+            "gamer": 1,
+            "maker": "Klaus Teuber"
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 5,
+        "fields": {
+            "name": "Dungeons & Dragons",
+            "game_type": 2,
+            "description":"D&D is a fantasy rol-playing game.",
+            "number_of_players": 4,
+            "gamer": 1,
+            "maker": "Wizards of the Coast"
+        }
     }
 ]
