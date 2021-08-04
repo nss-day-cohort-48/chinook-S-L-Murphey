@@ -28,5 +28,20 @@
                 1
             ]
         }
+    },
+    {
+        "model": "levelupapi.event",
+        "pk": 3,
+        "fields": {
+            "host": 1,
+            "game": 5,
+            "date": "2021-08-30",
+            "time": "6:00pm",
+            "description": "D&D Domination",
+            "title": "Vale of the Frost King campaign. All weekend.",
+            "attendees": [
+                1
+            ]
+        }
     }
 ]
