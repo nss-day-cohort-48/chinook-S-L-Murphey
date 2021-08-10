@@ -20,5 +20,13 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     attendees = models.ManyToManyField("Gamer", through="EventGamer", related_name="attending")
 
+    @property
+    def joined(self):
+        return self.__joined
+
+    @joined.setter
+    def joined(self, value):
+        self.__joined = value
+
     def __str__(self) -> str:
         return f'{self.game.name} on {self.date} hosted by {self.host}'

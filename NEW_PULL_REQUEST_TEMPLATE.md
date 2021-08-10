@@ -7,7 +7,7 @@
 
 #### Steps to Review
 
-1. Checkout this 
+1. Checkout to this branch locally
    ```
    git fetch --all
    git checkout branchname
