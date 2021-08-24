@@ -3,6 +3,3 @@
 - Total number of tracks on each playlist 
 */
 
-SELECT Track.TrackId , COUNT(PlaylistTrack.TrackId), Playlist.Name FROM Track
-JOIN PlaylistTrack ON Track.TrackId=PlaylistTrack.TrackId
-JOIN Playlist ON PlaylistTrack.PlaylistId = Playlist.PlaylistId
