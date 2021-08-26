@@ -16,6 +16,16 @@ class Game(models.Model):
     number_of_players = models.IntegerField()
     gamer = models.ForeignKey("Gamer", on_delete=models.CASCADE)
     maker = models.CharField(max_length=50)
+    
 
     def __str__(self):
         return self.name
+
+    @property
+    def event_count(self):
+        return self.__event_count
+
+    @event_count.setter
+    def event_count(self, value):
+        self.__event_count = value
+

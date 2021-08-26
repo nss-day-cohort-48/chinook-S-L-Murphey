@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class Event(models.Model):
     """Event Model
     Fields:
@@ -13,8 +14,8 @@ class Event(models.Model):
         attendees (ManyToManyField): The gamers attending the event
     """
     host = models.ForeignKey("Gamer", on_delete=models.CASCADE)
-    game = models.ForeignKey("Game", on_delete=models.CASCADE)
-    date = models.DateField()
+    game = models.ForeignKey("Game", on_delete=models.CASCADE, related_name='events')
+    date = models.DateField(auto_now=False, auto_now_add=False)
     time = models.TimeField()
     description = models.TextField()
     title = models.CharField(max_length=100)
@@ -27,6 +28,14 @@ class Event(models.Model):
     @joined.setter
     def joined(self, value):
         self.__joined = value
+
+    @property
+    def attendees_count(self):
+        return self.__attendees_count
+
+    @attendees_count.setter
+    def attendees_count(self, value):
+        self.__attendees_count = value
 
     def __str__(self) -> str:
         return f'{self.game.name} on {self.date} hosted by {self.host}'

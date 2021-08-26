@@ -10,6 +10,8 @@ from rest_framework import serializers
 from levelupapi.models import Game, Event, Gamer
 from levelupapi.views.game import GameSerializer
 from rest_framework.decorators import action
+from django.db.models import Count
+from django.db.models import Q
 
 
 class EventView(ViewSet):
@@ -47,7 +49,8 @@ class EventView(ViewSet):
             Response -- JSON serialized game instance
         """
         try:
-            event = Event.objects.get(pk=pk)
+            #event = Event.objects.get(pk=pk)
+            event = Event.objects.annotate(attendees_count=Count('attendees')).get(pk=pk)
             serializer = EventSerializer(event, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -101,12 +104,15 @@ class EventView(ViewSet):
         """
         # Get the current authenticated user
         gamer = Gamer.objects.get(user=request.auth.user)
-        events = Event.objects.all()
+        #events = Event.objects.all()
+        events = Event.objects.annotate(attendees_count=Count('attendees'),
+        joined=Count('attendees', filter=Q(attendees=gamer)))
 
         # Set the `joined` property on every event
         for event in events:
             # Check to see if the gamer is in the attendees list on the event
-            event.joined = gamer in event.attendees.all()
+            #event.joined = gamer in event.attendees.all()
+            event.joined = bool(event.joined)
 
         # Support filtering events by game
         game = self.request.query_params.get('gameId', None)
@@ -176,6 +182,6 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'host', 'game',
-                  'date', 'time', 'description', 'title', 'attendees', 'joined')
+                  'date', 'time', 'description', 'title', 'attendees', 'joined', 'attendees_count')
 
 
