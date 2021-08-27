@@ -1,8 +1,10 @@
 import json
+from django.conf.urls import url
 from rest_framework import status
 from rest_framework.test import APITestCase
 from levelupapi.models import GameType, Game
-
+from django.contrib.auth.models import User, Permission
+from rest_framework.authtoken.models import Token
 
 class GameTests(APITestCase):
     
@@ -23,6 +25,15 @@ class GameTests(APITestCase):
         }
         # Initiate request and capture response
         response = self.client.post(url, data, format='json')
+
+         # Store the TOKEN from the response data
+        self.token = Token.objects.get(pk=response.data['token'])
+
+        # Use the TOKEN to authenticate the requests
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        getUser = User.objects.get()
+        getUser.user_permissions.set([Permission.objects.get(codename="change_game"), Permission.objects.get(codename="view_game"), Permission.objects.get(codename="add_game"), Permission.objects.get(codename="delete_game")])
 
         # Parse the JSON in the response body
         json_response = json.loads(response.content)
@@ -89,23 +100,17 @@ class GameTests(APITestCase):
 
         game.save()
 
-        # Make sure request is authenticated
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        url = f'/games/{game.id}'
 
-        # Initiate request and store response
-        response = self.client.get(f"/games/{game.id}")
+        response = self.client.get(url)
 
-        # Parse the JSON in the response body
-        json_response = json.loads(response.content)
-
-        # Assert that the game was retrieved
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Assert that the values are correct
-        self.assertEqual(json_response["name"], "Monopoly")
-        self.assertEqual(json_response["maker"], "Milton Bradley")
-        self.assertEqual(json_response["description"], "The Classic Board Game")
-        self.assertEqual(json_response["number_of_players"], 4)
+        self.assertEqual(response.data["name"], "Monopoly")
+        self.assertEqual(response.data["maker"], "Milton Bradley")
+        self.assertEqual(response.data["description"], "The Classic Board Game")
+        self.assertEqual(response.data["number_of_players"], 4)
 
     def test_change_game(self):
         """
@@ -120,8 +125,10 @@ class GameTests(APITestCase):
         game.gamer_id = 1
         game.save()
 
+        url = f'/games/{game.id}'
+
         # DEFINE NEW PROPERTIES FOR GAME
-        data = {
+        new_game = {
             "gameTypeId": 1,
             "description": "No one actually liked this game.",
             "name": "Sorry",
@@ -130,19 +137,20 @@ class GameTests(APITestCase):
         }
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        response = self.client.put(f"/games/{game.id}", data, format="json")
+
+        response = self.client.put(url, new_game, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # GET GAME AGAIN TO VERIFY CHANGES
-        response = self.client.get(f"/games/{game.id}")
-        json_response = json.loads(response.content)
+        response = self.client.get(url)
+        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Assert that the properties are correct
-        self.assertEqual(json_response["name"], "Sorry")
-        self.assertEqual(json_response["maker"], "Hasbro")
-        self.assertEqual(json_response["description"], "No one actually liked this game.")
-        self.assertEqual(json_response["number_of_players"], 4)
+        self.assertEqual(response.data["name"], "Sorry")
+        self.assertEqual(response.data["maker"], "Hasbro")
+        self.assertEqual(response.data["description"], "No one actually liked this game.")
+        self.assertEqual(response.data["number_of_players"], 4)
 
     def test_delete_game(self):
         """
